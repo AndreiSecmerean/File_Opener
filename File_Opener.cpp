@@ -453,7 +453,6 @@ void main()
 
 	cout << "Started shell file opener\n" << endl;
 	try {
-		int menu;
 		string tags;
 		string tagToFind;
 		char exitOption;
@@ -470,25 +469,27 @@ void main()
 		FileOpener dataFromCSV("Tag-Address.csv");
 		logger.log(INFO, "created dataFromCSV");
 
-		do {
-			cout << "\n-----MENU-----\n"
-				<< "1.Open File Explorer\n"
-				<< "2.Show available tags and addresses\n"
-				<< "3.Show address based on tag\n"
-				<< "4.Create new tag - address\n"
-				<< "5.Edit tag\n"
-				<< "6.Edit address\n"
-				<< "7.Delete tag - address\n"
-				<< "0.exit"
-				<< endl;
+		while (!exitLoop) {
+			try {
+				int menu;
+				cout << "\n-----MENU-----\n"
+					<< "1.Open File Explorer\n"
+					<< "2.Show available tags and addresses\n"
+					<< "3.Show address based on tag\n"
+					<< "4.Create new tag - address\n"
+					<< "5.Edit tag\n"
+					<< "6.Edit address\n"
+					<< "7.Delete tag - address\n"
+					<< "0.exit"
+					<< endl;
 
-			cout << "Your choice: ";
-			cin >> menu;
+				cout << "Your choice: ";
+				cin >> menu;
 
-			switch (menu)
-			{
-			case 0: //exit
-				cout << "\nAre you sure you want to quit?\n [Y/N]: ";
+				switch (menu)
+				{
+				case 0: //exit
+					cout << "\nAre you sure you want to quit?\n [Y/N]: ";
 					cin >> exitOption;
 					if (exitOption == 'y' || exitOption == 'Y') {
 						exitLoop = true;
@@ -496,52 +497,65 @@ void main()
 					}
 					else if (exitOption == 'n' || exitOption == 'N') {
 						exitLoop = false;
-						cout << exitLoop;
+						//cout << exitLoop;
 						break;
 					}
-					else cout << "selection invalid, chose again [Y/N]: ";
-				 
-				exitLoop = true;
-				break;
+					else {
+						throw InvalidSelection("Selection invalid! Please chose again!");
+						exitLoop = false;
+						break;
+					}
 
-			case 1: //Open File 
-				dataFromCSV.setSeparatedTags(dataFromCSV.readTags());
-				dataFromCSV.extractAdress();
-				dataFromCSV.openExplorer();
-				break;
+					//exitLoop = true;
+					break;
 
-			case 2: //Show available tags and addresses
-				dataFromCSV.printCSV();
-				break;
+				case 1: //Open File 
+					dataFromCSV.setSeparatedTags(dataFromCSV.readTags());
+					dataFromCSV.extractAdress();
+					dataFromCSV.openExplorer();
+					break;
 
-			case 3: //Show address based on tag
-				cout << "Input tag you want to search ";
-				cin >> tagToFind;
-				dataFromCSV.tagExists(tagToFind, true);
-				break;
+				case 2: //Show available tags and addresses
+					dataFromCSV.printCSV();
+					break;
 
-			case 4: //Create new tag - address
-				csv.addressCreator(dataFromCSV);
-				dataFromCSV.setNewDataFromCSV("Tag-Address.csv");
-				break;
-			case 5: //Edit tag
-				csv.editTag(dataFromCSV, "Tag-Address.csv");
-				dataFromCSV.setNewDataFromCSV("Tag-Address.csv");
-				break;
-			case 6: //Edit address
-				csv.editAddress(dataFromCSV, "Tag-Address.csv");
-				dataFromCSV.setNewDataFromCSV("Tag-Address.csv");
-				break;
+				case 3: //Show address based on tag
+					cout << "Input tag you want to search ";
+					cin >> tagToFind;
+					dataFromCSV.tagExists(tagToFind, true);
+					break;
 
-			case 7: //Delete tag - address
-				csv.deleteAddress(dataFromCSV, "Tag-Address.csv");
-				dataFromCSV.setNewDataFromCSV("Tag-Address.csv");
-			default:
-				break;
+				case 4: //Create new tag - address
+					csv.addressCreator(dataFromCSV);
+					dataFromCSV.setNewDataFromCSV("Tag-Address.csv");
+					break;
+				case 5: //Edit tag
+					csv.editTag(dataFromCSV, "Tag-Address.csv");
+					dataFromCSV.setNewDataFromCSV("Tag-Address.csv");
+					break;
+				case 6: //Edit address
+					csv.editAddress(dataFromCSV, "Tag-Address.csv");
+					dataFromCSV.setNewDataFromCSV("Tag-Address.csv");
+					break;
+
+				case 7: //Delete tag - address
+					csv.deleteAddress(dataFromCSV, "Tag-Address.csv");
+					dataFromCSV.setNewDataFromCSV("Tag-Address.csv");
+					break;
+				default:
+					//throw InvalidSelection("Selection invalid! Please chose again!");
+					break;
+				}
 			}
-		} while (!exitLoop);
+			catch (InvalidSelection e) {
+				cout << e.what();
+				exitLoop = false;
+			}
+		}
 	}
 	catch (TagFileNotFound e) {
 		cout << e.what();
 	}
+
+	//TODO: Fix InvalidSelection exception infinite loop when it's called in menu selection
 }

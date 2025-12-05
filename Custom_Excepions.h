@@ -53,3 +53,20 @@ public:
         return message.c_str();
     }
 };
+
+class InvalidSelection : public exception {
+private:
+    string message;
+public:
+
+    // Constructor accepting const char*
+    InvalidSelection(const char* msg) :
+        message(msg) {
+    }
+
+    // Override what() method, marked
+    // noexcept for modern C++
+    const char* what() const noexcept {
+        return message.c_str();
+    }
+};
