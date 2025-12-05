@@ -29,14 +29,16 @@ public:
 		* This function purpuose is to read the file at the specified address in paranthasies line by line and separating the tags-address combo and
 		* address in 2 different vectors in order to be proccesed in the scope of opening an instance of File Explorer.
 		*
-		* These 2 vectors are formated as such:
-		* tagAdress[n] = "tag_n, adress"
-		* adress[n] = "address"
-		*
-		* The function will retun a vector of this format: vector_TagAddress<vector_Address>
-		*
 		* If a certain value  is desired it can be accessed as such:
-		* wantedAddressBasedOnVector = vector_TagAddress[n][n];
+		* wantedAddressBasedOnVector = vector_TagAddress[n][0/1];
+		* 
+		* PARAMS: 
+		*	const string& filename -> name of the csv file that the app uses, in this case "Tag-Address.csv"
+		* 
+		* RETURNS:
+		*	vector<vector<string>> data	-> 2d vector containing all of the tag-address combos: <vector_Tag<vector_Address>>
+		*								-> tagAdress[n][0] = "tag_n"
+		*								-> tagAdress[n][1] = "adress"
 		*/
 
 		vector<vector<string>> data;
@@ -68,14 +70,12 @@ public:
 	}
 
 	vector<string> readTags() {
-		/*This function purpuose is to read from the keyboard tags separated by " " and return them as a vector of strings that is then parsed to other functions
-		* as a vector.
+		/*DOCU:
+		* This functions purpuose is to read from the keyboard tags separated by "," and return them as a vector of strings 
 		*
-		* the vector looks like this
-		* vector[0] = tag_1
-		* vector[1] = tag_2
-		* ...
-		* vector[n] = tag_n
+		*
+		* RETURNS: 
+		*		vector<string> separatedTags -> contains all of the tags separated by ","
 		*/
 		fflush(stdin);
 		string tagsFromKeyboard;
@@ -83,7 +83,6 @@ public:
 		vector<string> separatedTags;
 
 		cout << "Please input strings separated by a coma" << endl;
-		//cin >> tagsFromKeyboard; DO NOT USE CIN, IT CONSIDERS WHITE-SPACE AS A TERMINATING CHARACTER
 		cin >> tagsFromKeyboard;
 
 
@@ -105,7 +104,9 @@ public:
 
 
 	void printCSV() {
-		/*This function is used to print the data from the csv separatad by space,*/
+		/*DOCU:
+		* This function is used to print the data from the csv separatad by space
+		*/
 
 		cout << "Displaying posible directories\n\n" << "tags \taddress" << endl;
 		for (const auto& row : this->dataFromCSV) {
@@ -118,8 +119,10 @@ public:
 	}
 
 	void openExplorer() {
+		/*DOCU:
+		* This function opens an instance of file explorer based on the address saved before calling this function
+		*/
 		string str = "explorer " + this->address;
-		//cout << dataFromCSV[0][1];
 
 		const char* command = str.c_str();
 		system(command);
@@ -155,11 +158,13 @@ public:
 		* This function searches the csv in order to check if a tag exists, this can be used when adding new tags or
 		* not to waste time when doing other operation in the file opener
 		*
-		* params:  string tag   -> tag to be evaluated
-		*		   bool print	-> specifies wether or not to print the tag-address combo found in the csv
+		* params:  
+		*		string tag	->	tag to be evaluated
+		*		bool print	->	specifies wether or not to print the tag-address combo found in the csv
 		*
-		* returns: true  -> if the tag already exists
-		*          false -> if the tag doesn't exist
+		* returns: 
+		*		true	 ->	 if the tag already exists
+		*		false	 ->	 if the tag doesn't exist
 		*/
 		bool tagExists = false;
 		for (int i = 0; i < size(this->dataFromCSV); i++) {
@@ -179,10 +184,12 @@ public:
 		* This function searches the csv in order to check if a address exists, this can be used when adding new address or
 		* not to waste time when doing other operation in the file opener
 		*
-		* params:  address   -> tag to be evaluated
+		* params:  
+		*		string tag	->	tag to be evaluated
 		*
-		* returns: true  -> if the tag already exists
-		*          false -> if the tag doesn't exist
+		* returns: 
+		*		true  -> if the tag already exists
+		*		false -> if the tag doesn't exist
 		*/
 		bool addressExists = false;
 		for (int i = 0; i < size(this->dataFromCSV); i++) {
@@ -232,7 +239,8 @@ public:
 		* This function is used to create a tag-address combination and write it to the csv. It reads from the keyboard in sequence the new tag and address and checks if they already
 		* exist in db.
 		*
-		* params: FileOpener fileCSV  -> this field is required in order to check for presence of the new tag and address
+		* params: 
+		*		FileOpener fileCSV  -> this field is required in order to check for presence of the new tag and address
 		*
 		* returns: void
 		*/
@@ -277,8 +285,8 @@ public:
 		*
 		* params: FileOpener fileCSV  -> this field is required in order to check for presence of the tag
 		*
-		* returns: bool isDeleted ->   true  if tag was deleted
-									   false if tag was not deleted / found
+		* returns: bool isDeleted ->    true  if tag was deleted
+		*			                    false if tag was not deleted / found
 		*/
 		bool isDeleted = true;
 		string tagToDelete;
