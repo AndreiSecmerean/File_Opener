@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Tag-Address.csv
+/File_Opener/x64/Debug
+/.vs/File_Opener/FileContentIndex
+/.vs/File_Opener/v17
+/x64/Debug
