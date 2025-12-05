@@ -230,6 +230,16 @@ private:
 	string newAddress;
 public:
 	bool fileExists(const string& filename) {
+		/*DOCU:
+		* Checks if there is a file in the app directory with the specified filename
+		* 
+		* PARAMS:
+		*		const string& filename -> file to be checked
+		* 
+		* RETURNS:
+		*		true -> file exists
+		*		false -> file doesn't exist
+		*/
 		ifstream file(filename);
 		return file.good();
 	}
@@ -275,6 +285,107 @@ public:
 		csv << this->newTag << ", " << this->newAddress << "\n";
 		csv.close();
 		cout << "\nSuccessfully added new tag " << this->newTag << " \nand it's coresponding address " << this->newAddress << endl;
+	}
+
+	void editTag(FileOpener fileCSV, const string& filename) {
+		string tagToEdit, edditedTag;
+		vector<vector<string>> dataFromCSV;
+		fstream newCSV;
+		string NewTag_Address = "NewTag-Address.csv";
+
+
+		try {
+			if (!fileExists(filename)) {
+				throw TagFileNotFound("File not found");
+			}
+
+			cout << "\nPlease input the tag that you want to edit: ";
+			cin >> tagToEdit;
+			cout << "\nPlease input new name for tag {" << tagToEdit << "}: ";
+			cin >> edditedTag;
+
+
+			dataFromCSV = fileCSV.get_dataFromCSV();
+			if (fileCSV.tagExists(tagToEdit, false) == false) {
+				string error = "Tag " + tagToEdit + " does not exist in csv!";
+				throw TagNotFound("Tag does not exist in csv!");
+			}
+
+			newCSV.open(NewTag_Address.c_str(), ios::out | ios::app);
+			for (int csvCounter = 0; csvCounter < dataFromCSV.size(); csvCounter++) {
+				if (dataFromCSV[csvCounter][0] == tagToEdit) {
+					dataFromCSV[csvCounter][0] = edditedTag;
+					newCSV << dataFromCSV[csvCounter][0] << ", " << dataFromCSV[csvCounter][1] << endl;
+				}
+				else
+				{
+					newCSV << dataFromCSV[csvCounter][0] << ", " << dataFromCSV[csvCounter][1] << endl;
+				}
+			}
+
+			newCSV.close();
+			remove(filename.c_str());
+			rename(NewTag_Address.c_str(), filename.c_str());
+			cout << "\Edited tag: " << tagToEdit << " to: " << edditedTag << endl;
+
+		}
+		catch (TagFileNotFound e) {
+			cout << e.what();
+		}
+		catch (TagNotFound e) {
+			cout << e.what();
+		}
+	}
+
+	void editAddress(FileOpener fileCSV, const string& filename) {
+		string tagToEdit, edditedAddress;
+		vector<vector<string>> dataFromCSV;
+		fstream newCSV;
+		string NewTag_Address = "NewTag-Address.csv";
+
+
+		try {
+			if (!fileExists(filename)) {
+				throw TagFileNotFound("File not found");
+			}
+
+			cout << "\nPlease input the tag that you want to edit it's address: ";
+			cin >> tagToEdit;
+			cout << "\nPlease input new address for tag {" << tagToEdit << "}: ";
+			cin >> edditedAddress;
+
+
+			dataFromCSV = fileCSV.get_dataFromCSV();
+			if (fileCSV.tagExists(tagToEdit, false) == false) {
+				string error = "Tag " + tagToEdit + " does not exist in csv!";
+				throw TagNotFound("Tag does not exist in csv!");
+			}
+
+			newCSV.open(NewTag_Address.c_str(), ios::out | ios::app);
+			for (int csvCounter = 0; csvCounter < dataFromCSV.size(); csvCounter++) {
+				if (dataFromCSV[csvCounter][0] == tagToEdit) {
+					dataFromCSV[csvCounter][1] = edditedAddress;
+					newCSV << dataFromCSV[csvCounter][0] << ", " << dataFromCSV[csvCounter][1] << endl;
+				}
+				else
+				{
+					newCSV << dataFromCSV[csvCounter][0] << ", " << dataFromCSV[csvCounter][1] << endl;
+				}
+			}
+
+			newCSV.close();
+			remove(filename.c_str());
+			rename(NewTag_Address.c_str(), filename.c_str());
+			cout << "\Edited tag: " << tagToEdit << " to: " << edditedAddress << endl;
+
+		}
+		catch (TagFileNotFound e) {
+			cout << e.what();
+		}
+		catch (TagNotFound e) {
+			cout << e.what();
+		}
+
 	}
 
 	void deleteAddress(FileOpener fileCSV, const string& filename)
@@ -365,7 +476,9 @@ void main()
 				<< "2.Show available tags and addresses\n"
 				<< "3.Show address based on tag\n"
 				<< "4.Create new tag - address\n"
-				<< "5.Delete tag - address\n"
+				<< "5.Edit tag\n"
+				<< "6.Edit address\n"
+				<< "7.Delete tag - address\n"
 				<< "0.exit"
 				<< endl;
 
@@ -411,8 +524,16 @@ void main()
 				csv.addressCreator(dataFromCSV);
 				dataFromCSV.setNewDataFromCSV("Tag-Address.csv");
 				break;
+			case 5: //Edit tag
+				csv.editTag(dataFromCSV, "Tag-Address.csv");
+				dataFromCSV.setNewDataFromCSV("Tag-Address.csv");
+				break;
+			case 6: //Edit address
+				csv.editAddress(dataFromCSV, "Tag-Address.csv");
+				dataFromCSV.setNewDataFromCSV("Tag-Address.csv");
+				break;
 
-			case 5: //Delete tag - address
+			case 7: //Delete tag - address
 				csv.deleteAddress(dataFromCSV, "Tag-Address.csv");
 				dataFromCSV.setNewDataFromCSV("Tag-Address.csv");
 			default:
