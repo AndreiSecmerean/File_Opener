@@ -269,7 +269,7 @@ public:
 		cout << "\nSuccessfully added new tag " << this->newTag << " \nand it's coresponding address " << this->newAddress << endl;
 	}
 
-	bool deleteAddress(FileOpener fileCSV, const string& filename)
+	void deleteAddress(FileOpener fileCSV, const string& filename)
 	{
 		/*DOCU:
 		* This function is used to delete a tag-address combination from the csv. It reads from the keyboard in sequence the tag and checks if it
@@ -324,7 +324,6 @@ public:
 		}
 
 		
-		return isDeleted;
 	}
 };
 
