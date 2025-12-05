@@ -155,7 +155,8 @@ public:
 		* This function searches the csv in order to check if a tag exists, this can be used when adding new tags or
 		* not to waste time when doing other operation in the file opener
 		*
-		* params:  tag   -> tag to be evaluated
+		* params:  string tag   -> tag to be evaluated
+		*		   bool print	-> specifies wether or not to print the tag-address combo found in the csv
 		*
 		* returns: true  -> if the tag already exists
 		*          false -> if the tag doesn't exist
@@ -268,7 +269,7 @@ public:
 		cout << "\nSuccessfully added new tag " << this->newTag << " \nand it's coresponding address " << this->newAddress << endl;
 	}
 
-	bool deleteAddress(FileOpener fileCSV)
+	bool deleteAddress(FileOpener fileCSV, const string& filename)
 	{
 		/*DOCU:
 		* This function is used to delete a tag-address combination from the csv. It reads from the keyboard in sequence the tag and checks if it
@@ -280,56 +281,49 @@ public:
 									   false if tag was not deleted / found
 		*/
 		bool isDeleted = true;
-		vector<string> row;
-		string toDelete, line, cell;
-		fstream fin, fout;
-		vector<vector<string>> dataFromCSV = fileCSV.get_dataFromCSV();
+		string tagToDelete;
+		string NewTag_Address = "NewTag-Address.csv";
+		vector<vector<string>> dataFromCSV;
+		fstream newCSV;
 
-
-		// Open the existing file
-		fin.open("Tag-Address.csv", ios::in);
-
-		// Create a new file to store the non-deleted data
-		fout.open("Tag-AddressNew.csv", ios::out);
-
-		cout << "Input the tag that you want to delete: ";
-		cin >> toDelete;
-		if (fileCSV.addressExists(toDelete)) {
-			cout << "Unable to delete, tag-address doesn't exist!" << endl;
-			return !isDeleted;
-		}
-
-		while (!fin.eof())
-		{
-			row.clear();
-			getline(fin, line);
-			stringstream ss(line);
-
-			while (getline(ss, cell, ',')) {
-				row.push_back(cell);
+		try {
+			cout << "\nPlease input tag: ";
+			cin >> tagToDelete;
+			if (!fileExists(filename)) {
+				throw TagFileNotFound("File not found");
 			}
 
-			if (dataFromCSV[0][0] != toDelete)
-			{
-				if (!fin.eof()) {
-					for (int i = 0; i < row.size(); i++) {
-						if (dataFromCSV[i][0] != toDelete) {
-							fout << row[i] << ", ";
-						}
-						else if (dataFromCSV[i][0] == toDelete) {
-							continue;										//TODO:  function doesn't actualy delete the required tag,  but it does finish the function. It doesn't exclude the tag
-						}
-					}
-					fout << row[row.size() - 1] << "\n";
+			dataFromCSV = fileCSV.get_dataFromCSV();
+			if (fileCSV.tagExists(tagToDelete, false) == false) {
+				string error = "Tag " + tagToDelete + " does not exist in csv!";
+				throw TagNotFound("Tag does not exist in csv!");
+			}
+
+			newCSV.open(NewTag_Address.c_str(), ios::out | ios::app);
+			for (int csvCounter = 0; csvCounter < dataFromCSV.size(); csvCounter++) {
+				if (dataFromCSV[csvCounter][0] == tagToDelete) {
+					continue;
+				}
+				else
+				{
+					newCSV << dataFromCSV[csvCounter][0] << ", " << dataFromCSV[csvCounter][1] << endl;
 				}
 			}
-		}
-		fin.close();
-		fout.close();
 
-		remove("Tag-Address.csv");
-		rename("Tag-AddressNew.csv", "Tag-Address.csv");
-		cout << "Deleted tag-address succesfully" << endl;
+			newCSV.close();
+			remove(filename.c_str());
+			rename(NewTag_Address.c_str(), filename.c_str());
+			cout << "\nRemoved tag: " << tagToDelete << " from tag-address list";
+
+		}
+		catch (TagFileNotFound e) {
+			cout << e.what();
+		}
+		catch (TagNotFound e) {
+			cout << e.what();
+		}
+
+		
 		return isDeleted;
 	}
 };
@@ -412,7 +406,7 @@ void main()
 				break;
 
 			case 5: //Delete tag - address
-				csv.deleteAddress(dataFromCSV);
+				csv.deleteAddress(dataFromCSV, "Tag-Address.csv");
 				dataFromCSV.setNewDataFromCSV("Tag-Address.csv");
 			default:
 				break;
