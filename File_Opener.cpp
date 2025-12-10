@@ -244,6 +244,12 @@ public:
 		return file.good();
 	}
 
+	void createCSVFile(const string& filename) {
+		if (!fileExists(filename)) {
+
+		}
+	}
+
 	void addressCreator(FileOpener fileCSV) {
 		/*DOCU:
 		* This function is used to create a tag-address combination and write it to the csv. It reads from the keyboard in sequence the new tag and address and checks if they already
@@ -288,6 +294,20 @@ public:
 	}
 
 	void editTag(FileOpener fileCSV, const string& filename) {
+		/*DOCU:
+		* This function opens the csv, reads it contents and saves the tag-address combo to a new auxiliary file. This copying continues as normal untill the algorithm
+		* encounters the tag that we want to edit. When it does find the tag to be edited the program replaces the tag with the new tag. In the end it renames the auxiliary
+		* file to the original file, but only after it deletes the original
+		* 
+		* PARAMS: 
+		* 
+		* FileOpener fileCSV -> required to check the tag in the csv
+		* const string& filename -> required to check the presence of the file
+		* 
+		* RETURNS:
+		* 
+		* void
+		*/
 		string tagToEdit, edditedTag;
 		vector<vector<string>> dataFromCSV;
 		fstream newCSV;
@@ -338,6 +358,21 @@ public:
 	}
 
 	void editAddress(FileOpener fileCSV, const string& filename) {
+		/*DOCU:
+		* This function opens the csv, reads it contents and saves the tag-address combo to a new auxiliary file. This copying continues as normal untill the algorithm
+		* encounters the tag that we want to edit its address. When it does find the tag-address to be edited, the program replaces the address with the new address.
+		* In the end it renames the auxiliary file to the original file, but only after it deletes the original
+		* 
+		* 
+		* PARAMS: 
+		* 
+		* FileOpener fileCSV -> required to check the tag in the csv
+		* const string& filename -> required to check the presence of the file
+		* 
+		* RETURNS:
+		* 
+		* void
+		*/
 		string tagToEdit, edditedAddress;
 		vector<vector<string>> dataFromCSV;
 		fstream newCSV;
@@ -490,7 +525,7 @@ void main()
 				{
 				case 0: //exit
 					cout << "\nAre you sure you want to quit?\n [Y/N]: ";
-					cin >> exitOption;
+					cin >> exitOption;	//TODO: implement single character reading from keyboard: abc -> a
 					if (exitOption == 'y' || exitOption == 'Y') {
 						exitLoop = true;
 						exit(1);
@@ -543,7 +578,7 @@ void main()
 					dataFromCSV.setNewDataFromCSV("Tag-Address.csv");
 					break;
 				default:
-					//throw InvalidSelection("Selection invalid! Please chose again!");
+					cout << "Selection invalid! Please chose again!" << endl;
 					break;
 				}
 			}
@@ -551,11 +586,18 @@ void main()
 				cout << e.what();
 				exitLoop = false;
 			}
+			catch (exception e) {
+				cout << "Error detected: \n" << e.what() << endl;
+			}
 		}
 	}
 	catch (TagFileNotFound e) {
 		cout << e.what();
 	}
+	catch (exception e) {
+		cout << "Error detected: \n" << e.what() << endl;
+	}
 
-	//TODO: Fix InvalidSelection exception infinite loop when it's called in menu selection
 }
+
+//TODO: Implement feature to check if "Tag-Address.csv" existance, if it does -> program continues; if it doesn't -> create file
