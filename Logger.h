@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <ctime> 
 
 using namespace std;
 
@@ -13,7 +14,7 @@ class Logger {
 private:
     bool enable;
     ofstream logFile; // File stream for the log file
-
+	LogLevel currentLevel; // Default log level
     
     string levelToString(LogLevel level)
     {
@@ -34,29 +35,28 @@ private:
     }
 public:
     // Constructor: Opens the log file in append mode
-    Logger(const string& filename, bool enable)
+    Logger(const string& filename, LogLevel setLevel, bool enable)
     {
         logFile.open(filename, ios::app);
         if (!logFile.is_open()) {
             cerr << "Error opening log file." << endl;
         }
         this->enable = enable;
+		setLogLevel(setLevel);
     }
 
     // Destructor: Closes the log file
     ~Logger() { logFile.close(); }
 
     // Logs a message with a given log level
-    void log(LogLevel level, const string& message)
+    pair<LogLevel, string> writelog(LogLevel level, const string& message)
     {   
         if (this->enable) {
             // Create log entry
             ostringstream logEntry;
 
-            logEntry << levelToString(level) << ": " << message << endl;
+            logEntry << getTime() << levelToString(level) << ": " << message << endl;
 
-            // Output to console
-            cout << logEntry.str();
 
             // Output to log file
             if (logFile.is_open()) {
@@ -64,6 +64,43 @@ public:
                 logFile
                     .flush(); // Ensure immediate write to file
             }
+			return make_pair(level, logEntry.str());
         }
+    }
+
+    void dispLog(pair<LogLevel, string> display){
+		LogLevel level = display.first;
+		string message = display.second;
+
+        if(level >= this->currentLevel) {
+            cout << message;
+		}
+    }
+
+
+    void log(LogLevel level, const string& message) {
+        pair<LogLevel, string> logEntry = writelog(level, message);
+        dispLog(logEntry);
+	}
+
+
+
+
+	//Setters:
+    
+    void setLogLevel(LogLevel level) {
+        this->currentLevel = level;
+	}
+
+    //Geters:
+
+    string getTime() {
+        time_t timestamp = time(&timestamp);
+        struct tm datetime = *localtime(&timestamp);
+
+        char output[30];
+
+        strftime(output, sizeof(output), "%H:%M:%S", &datetime);
+        return string(output);
     }
 };

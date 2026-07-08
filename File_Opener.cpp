@@ -493,7 +493,7 @@ void main()
 		char exitOption;
 		bool exitLoop = false;
 		bool exitMain = false;
-		Logger logger("LOG.txt", true);
+		Logger logger("LOG.txt",DEBUG, true);
 		CSVOperations csv;
 
 		if (!csv.fileExists("Tag-Address.csv")) {
