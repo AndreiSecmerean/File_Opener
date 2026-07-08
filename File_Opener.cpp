@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include "Custom_Excepions.h"
 #include "Logger.h"
+#include <conio.h>
 
 using namespace std;
 
@@ -490,11 +491,12 @@ void main()
 	try {
 		string tags;
 		string tagToFind;
-		char exitOption;
+		char exitOption = NULL;
 		bool exitLoop = false;
 		bool exitMain = false;
-		Logger logger("LOG.txt",DEBUG, true);
+		Logger logger("LOG.txt",INFO, true);
 		CSVOperations csv;
+		string message;
 
 		if (!csv.fileExists("Tag-Address.csv")) {
 			throw TagFileNotFound("File with inital tag locations is not present, check to see if it was deleted");
@@ -502,8 +504,7 @@ void main()
 
 
 		FileOpener dataFromCSV("Tag-Address.csv");
-		logger.log(INFO, "created dataFromCSV");
-
+		logger.log(DEBUG, "created dataFromCSV");
 		while (!exitLoop) {
 			try {
 				int menu;
@@ -518,20 +519,29 @@ void main()
 					<< "0.exit"
 					<< endl;
 
-				cout << "Your choice: ";
+				cout << "Make your choice and press enter: ";
 				cin >> menu;
 
 				switch (menu)
 				{
 				case 0: //exit
+					message = "User exited the program :" + to_string(menu);
+					logger.log(DEBUG, message);
+
+
 					cout << "\nAre you sure you want to quit?\n [Y/N]: ";
-					cin >> exitOption;	//TODO: implement single character reading from keyboard: abc -> a
+					fflush(stdin);
+					exitOption = _getche();
+
+
 					if (exitOption == 'y' || exitOption == 'Y') {
 						exitLoop = true;
+						logger.log(DEBUG, "selected exit option: y/Y");
 						exit(1);
 					}
 					else if (exitOption == 'n' || exitOption == 'N') {
 						exitLoop = false;
+						logger.log(DEBUG, "selected exit option: n/N");
 						//cout << exitLoop;
 						break;
 					}

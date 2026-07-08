@@ -55,7 +55,7 @@ public:
             // Create log entry
             ostringstream logEntry;
 
-            logEntry << getTime() << levelToString(level) << ": " << message << endl;
+            logEntry << "\n" << getTime() << levelToString(level) << ": " << message << endl;
 
 
             // Output to log file
@@ -95,12 +95,13 @@ public:
     //Geters:
 
     string getTime() {
-        time_t timestamp = time(&timestamp);
-        struct tm datetime = *localtime(&timestamp);
+        time_t rawtime;
+        struct tm datetime;
+        char buffer[30];
+        time(&rawtime);
+        localtime_s(&datetime, &rawtime);
 
-        char output[30];
-
-        strftime(output, sizeof(output), "%H:%M:%S", &datetime);
-        return string(output);
+        strftime(buffer, sizeof(buffer), "%H:%M:%S", &datetime);
+        return string(buffer);
     }
 };
