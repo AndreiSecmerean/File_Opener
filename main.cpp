@@ -11,6 +11,7 @@
 
 using namespace std;
 
+//TODO: refactor code so that the 2 classes are in separate files, and the main function is this file
 
 class FileOpener {
 private:
@@ -485,18 +486,17 @@ public:
 
 void main()
 {
+	string error_message;
+	Logger logger("LOG.txt", INFO, true, true); // Create a logger instance with the following options: log level, enabled, and display logs
 
-
-	cout << "Started shell file opener\n" << endl;
+	logger.log(INFO, "Started folder/file opener");
 	try {
 		string tags;
 		string tagToFind;
 		char exitOption = NULL;
 		bool exitLoop = false;
 		bool exitMain = false;
-		Logger logger("LOG.txt",INFO, true);
 		CSVOperations csv;
-		string message;
 
 		if (!csv.fileExists("Tag-Address.csv")) {
 			throw TagFileNotFound("File with inital tag locations is not present, check to see if it was deleted");
@@ -525,8 +525,8 @@ void main()
 				switch (menu)
 				{
 				case 0: //exit
-					message = "User exited the program :" + to_string(menu);
-					logger.log(DEBUG, message);
+					error_message = "User exited the program :" + to_string(menu);
+					logger.log(DEBUG, error_message);
 
 
 					cout << "\nAre you sure you want to quit?\n [Y/N]: ";
@@ -536,12 +536,13 @@ void main()
 
 					if (exitOption == 'y' || exitOption == 'Y') {
 						exitLoop = true;
-						logger.log(DEBUG, "selected exit option: y/Y");
+						logger.log(DEBUG, "selected exit option: [y/Y]");
+						logger.log(INFO, "Exiting program");
 						exit(1);
 					}
 					else if (exitOption == 'n' || exitOption == 'N') {
 						exitLoop = false;
-						logger.log(DEBUG, "selected exit option: n/N");
+						logger.log(DEBUG, "selected exit option: [n/N]");
 						//cout << exitLoop;
 						break;
 					}
@@ -597,7 +598,9 @@ void main()
 				exitLoop = false;
 			}
 			catch (exception e) {
-				cout << "Error detected: \n" << e.what() << endl;
+				error_message = "Error detected: \n";
+				error_message.append(e.what());
+				logger.log(ERROR, error_message);
 			}
 		}
 	}
@@ -605,7 +608,9 @@ void main()
 		cout << e.what();
 	}
 	catch (exception e) {
-		cout << "Error detected: \n" << e.what() << endl;
+		error_message = "Error detected: \n";
+		error_message.append(e.what());
+		logger.log(ERROR, error_message);
 	}
 
 }

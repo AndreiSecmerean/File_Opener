@@ -15,6 +15,7 @@ private:
     bool enable;
     ofstream logFile; // File stream for the log file
 	LogLevel currentLevel; // Default log level
+    bool displayLog; 
     
     string levelToString(LogLevel level)
     {
@@ -35,13 +36,14 @@ private:
     }
 public:
     // Constructor: Opens the log file in append mode
-    Logger(const string& filename, LogLevel setLevel, bool enable)
+    Logger(const string& filename, LogLevel setLevel, bool enable, bool displayLog)
     {
         logFile.open(filename, ios::app);
         if (!logFile.is_open()) {
             cerr << "Error opening log file." << endl;
         }
         this->enable = enable;
+		this->displayLog = displayLog;
 		setLogLevel(setLevel);
     }
 
@@ -55,7 +57,7 @@ public:
             // Create log entry
             ostringstream logEntry;
 
-            logEntry << "\n" << getTime() << levelToString(level) << ": " << message << endl;
+            logEntry << "\n" << getTime() <<" [" << levelToString(level) << "]: " << message << endl;
 
 
             // Output to log file
@@ -79,8 +81,13 @@ public:
 
 
     void log(LogLevel level, const string& message) {
+        if (level < this->currentLevel) {
+            return;
+        }
         pair<LogLevel, string> logEntry = writelog(level, message);
+        if (this->displayLog) {
         dispLog(logEntry);
+        }
 	}
 
 
