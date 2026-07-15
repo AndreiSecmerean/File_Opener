@@ -8,6 +8,7 @@
 #include "Custom_Excepions.h"
 #include "Logger.h"
 #include <conio.h>
+#include <iterator>
 
 using namespace std;
 
@@ -169,7 +170,7 @@ public:
 		*		false	 ->	 if the tag doesn't exist
 		*/
 		bool tagExists = false;
-		for (int i = 0; i < size(this->dataFromCSV); i++) {
+		for (int i = 0; i < this->dataFromCSV.size(); i++) {
 			if (tag == this->dataFromCSV[i][0]) {
 				tagExists = true;
 				if (print) {
@@ -194,7 +195,7 @@ public:
 		*		false -> if the tag doesn't exist
 		*/
 		bool addressExists = false;
-		for (int i = 0; i < size(this->dataFromCSV); i++) {
+		for (int i = 0; i < this->dataFromCSV.size(); i++) {
 			if (address == this->dataFromCSV[i][1]) {
 				addressExists = true;
 				break;
@@ -449,12 +450,14 @@ public:
 				throw TagFileNotFound("File not found");
 			}
 
+			//get data from csv and check if the tag exists, if it doesn't throw an exception
 			dataFromCSV = fileCSV.get_dataFromCSV();
 			if (fileCSV.tagExists(tagToDelete, false) == false) {
 				string error = "Tag " + tagToDelete + " does not exist in csv!";
 				throw TagNotFound("Tag does not exist in csv!");
 			}
 
+			//creates a new csv file and coppies content from the old csv to the new one, but skips the tag that we want to delete
 			newCSV.open(NewTag_Address.c_str(), ios::out | ios::app);
 			for (int csvCounter = 0; csvCounter < dataFromCSV.size(); csvCounter++) {
 				if (dataFromCSV[csvCounter][0] == tagToDelete) {
@@ -481,6 +484,27 @@ public:
 
 		
 	}
+
+	void orderTags(FileOpener fileCSV, const string& filename) {
+		/*DOCU:
+		* This function is used to order the tags in the csv. It reads from the csv and saves the tag-address combo to a new auxiliary file. This copying continues as normal untill the algorithm
+		* encounters the tag that we want to edit its address. When it does find the tag-address to be edited, the program replaces the address with the new address.
+		* In the end it renames the auxiliary file to the original file, but only after it deletes the original
+		*
+		*
+		* PARAMS:
+		*
+		* FileOpener fileCSV -> required to check the tag in the csv
+		* const string& filename -> required to check the presence of the file
+		*
+		* RETURNS:
+		*
+		* void
+		*/
+
+
+
+
 };
 
 
