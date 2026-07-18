@@ -227,6 +227,11 @@ public:
 
 };
 
+
+
+
+
+
 class CSVOperations {
 private:
 	string newTag;
@@ -235,10 +240,10 @@ public:
 	bool fileExists(const string& filename) {
 		/*DOCU:
 		* Checks if there is a file in the app directory with the specified filename
-		* 
+		*
 		* PARAMS:
 		*		const string& filename -> file to be checked
-		* 
+		*
 		* RETURNS:
 		*		true -> file exists
 		*		false -> file doesn't exist
@@ -258,7 +263,7 @@ public:
 		* This function is used to create a tag-address combination and write it to the csv. It reads from the keyboard in sequence the new tag and address and checks if they already
 		* exist in db.
 		*
-		* params: 
+		* params:
 		*		FileOpener fileCSV  -> this field is required in order to check for presence of the new tag and address
 		*
 		* returns: void
@@ -276,7 +281,7 @@ public:
 					throw ValueAlreadyExists("Tag already exists in database");
 				}
 
-				cout << "\nInput a new addres for tag " << this->newTag<<": ";
+				cout << "\nInput a new addres for tag " << this->newTag << ": ";
 				cin >> this->newAddress;
 				if (fileCSV.addressExists(this->newAddress)) {
 					throw ValueAlreadyExists("Address already exists in database");
@@ -301,14 +306,14 @@ public:
 		* This function opens the csv, reads it contents and saves the tag-address combo to a new auxiliary file. This copying continues as normal untill the algorithm
 		* encounters the tag that we want to edit. When it does find the tag to be edited the program replaces the tag with the new tag. In the end it renames the auxiliary
 		* file to the original file, but only after it deletes the original
-		* 
-		* PARAMS: 
-		* 
+		*
+		* PARAMS:
+		*
 		* FileOpener fileCSV -> required to check the tag in the csv
 		* const string& filename -> required to check the presence of the file
-		* 
+		*
 		* RETURNS:
-		* 
+		*
 		* void
 		*/
 		string tagToEdit, edditedTag;
@@ -365,15 +370,15 @@ public:
 		* This function opens the csv, reads it contents and saves the tag-address combo to a new auxiliary file. This copying continues as normal untill the algorithm
 		* encounters the tag that we want to edit its address. When it does find the tag-address to be edited, the program replaces the address with the new address.
 		* In the end it renames the auxiliary file to the original file, but only after it deletes the original
-		* 
-		* 
-		* PARAMS: 
-		* 
+		*
+		*
+		* PARAMS:
+		*
 		* FileOpener fileCSV -> required to check the tag in the csv
 		* const string& filename -> required to check the presence of the file
-		* 
+		*
 		* RETURNS:
-		* 
+		*
 		* void
 		*/
 		string tagToEdit, edditedAddress;
@@ -482,13 +487,12 @@ public:
 			cout << e.what();
 		}
 
-		
+
 	}
 
 	void orderTags(FileOpener fileCSV, const string& filename) {
 		/*DOCU:
-		* This function is used to order the tags in the csv. It reads from the csv and saves the tag-address combo to a new auxiliary file. This copying continues as normal untill the algorithm
-		* encounters the tag that we want to edit its address. When it does find the tag-address to be edited, the program replaces the address with the new address.
+		* This function is used to order the tags in the csv. It reads from the csv and saves the tag-address combo to a new auxiliary file. When it does find the tag-address to be edited, the program replaces the address with the new address.
 		* In the end it renames the auxiliary file to the original file, but only after it deletes the original
 		*
 		*
@@ -505,138 +509,139 @@ public:
 
 
 
+	}
+
+
 };
-
-
 void main()
-{
-	string error_message;
-	Logger logger("LOG.txt", INFO, true, true); // Create a logger instance with the following options: log level, enabled, and display logs
+	{
+		string error_message;
+		Logger logger("LOG.txt", INFO, true, true); // Create a logger instance with the following options: log level, enabled, and display logs
 
-	logger.log(INFO, "Started folder/file opener");
-	try {
-		string tags;
-		string tagToFind;
-		char exitOption = NULL;
-		bool exitLoop = false;
-		bool exitMain = false;
-		CSVOperations csv;
+		logger.log(INFO, "Started folder/file opener");
+		try {
+			string tags;
+			string tagToFind;
+			char exitOption = NULL;
+			bool exitLoop = false;
+			bool exitMain = false;
+			CSVOperations csv;
 
-		if (!csv.fileExists("Tag-Address.csv")) {
-			throw TagFileNotFound("File with inital tag locations is not present, check to see if it was deleted");
-		}
-
-
-		FileOpener dataFromCSV("Tag-Address.csv");
-		logger.log(DEBUG, "created dataFromCSV");
-		while (!exitLoop) {
-			try {
-				int menu;
-				cout << "\n-----MENU-----\n"
-					<< "1.Open File Explorer\n"
-					<< "2.Show available tags and addresses\n"
-					<< "3.Show address based on tag\n"
-					<< "4.Create new tag - address\n"
-					<< "5.Edit tag\n"
-					<< "6.Edit address\n"
-					<< "7.Delete tag - address\n"
-					<< "0.exit"
-					<< endl;
-
-				cout << "Make your choice and press enter: ";
-				cin >> menu;
-
-				switch (menu)
-				{
-				case 0: //exit
-					error_message = "User exited the program :" + to_string(menu);
-					logger.log(DEBUG, error_message);
+			if (!csv.fileExists("Tag-Address.csv")) {
+				throw TagFileNotFound("File with inital tag locations is not present, check to see if it was deleted");
+			}
 
 
-					cout << "\nAre you sure you want to quit?\n [Y/N]: ";
-					fflush(stdin);
-					exitOption = _getche();
+			FileOpener dataFromCSV("Tag-Address.csv");
+			logger.log(DEBUG, "created dataFromCSV");
+			while (!exitLoop) {
+				try {
+					int menu;
+					cout << "\n-----MENU-----\n"
+						<< "1.Open File Explorer\n"
+						<< "2.Show available tags and addresses\n"
+						<< "3.Show address based on tag\n"
+						<< "4.Create new tag - address\n"
+						<< "5.Edit tag\n"
+						<< "6.Edit address\n"
+						<< "7.Delete tag - address\n"
+						<< "0.exit"
+						<< endl;
+
+					cout << "Make your choice and press enter: ";
+					cin >> menu;
+
+					switch (menu)
+					{
+					case 0: //exit
+						error_message = "User exited the program :" + to_string(menu);
+						logger.log(DEBUG, error_message);
 
 
-					if (exitOption == 'y' || exitOption == 'Y') {
-						exitLoop = true;
-						logger.log(DEBUG, "selected exit option: [y/Y]");
-						logger.log(INFO, "Exiting program");
-						exit(1);
-					}
-					else if (exitOption == 'n' || exitOption == 'N') {
-						exitLoop = false;
-						logger.log(DEBUG, "selected exit option: [n/N]");
-						//cout << exitLoop;
+						cout << "\nAre you sure you want to quit?\n [Y/N]: ";
+						fflush(stdin);
+						exitOption = _getche();
+
+
+						if (exitOption == 'y' || exitOption == 'Y') {
+							exitLoop = true;
+							logger.log(DEBUG, "selected exit option: [y/Y]");
+							logger.log(INFO, "Exiting program");
+							exit(1);
+						}
+						else if (exitOption == 'n' || exitOption == 'N') {
+							exitLoop = false;
+							logger.log(DEBUG, "selected exit option: [n/N]");
+							//cout << exitLoop;
+							break;
+						}
+						else {
+							throw InvalidSelection("Selection invalid! Please chose again!");
+							exitLoop = false;
+							break;
+						}
+
+						//exitLoop = true;
+						break;
+
+					case 1: //Open File 
+						dataFromCSV.setSeparatedTags(dataFromCSV.readTags());
+						dataFromCSV.extractAdress();
+						dataFromCSV.openExplorer();
+						break;
+
+					case 2: //Show available tags and addresses
+						dataFromCSV.printCSV();
+						break;
+
+					case 3: //Show address based on tag
+						cout << "Input tag you want to search ";
+						cin >> tagToFind;
+						dataFromCSV.tagExists(tagToFind, true);
+						break;
+
+					case 4: //Create new tag - address
+						csv.addressCreator(dataFromCSV);
+						dataFromCSV.setNewDataFromCSV("Tag-Address.csv");
+						break;
+					case 5: //Edit tag
+						csv.editTag(dataFromCSV, "Tag-Address.csv");
+						dataFromCSV.setNewDataFromCSV("Tag-Address.csv");
+						break;
+					case 6: //Edit address
+						csv.editAddress(dataFromCSV, "Tag-Address.csv");
+						dataFromCSV.setNewDataFromCSV("Tag-Address.csv");
+						break;
+
+					case 7: //Delete tag - address
+						csv.deleteAddress(dataFromCSV, "Tag-Address.csv");
+						dataFromCSV.setNewDataFromCSV("Tag-Address.csv");
+						break;
+					default:
+						cout << "Selection invalid! Please chose again!" << endl;
 						break;
 					}
-					else {
-						throw InvalidSelection("Selection invalid! Please chose again!");
-						exitLoop = false;
-						break;
-					}
-
-					//exitLoop = true;
-					break;
-
-				case 1: //Open File 
-					dataFromCSV.setSeparatedTags(dataFromCSV.readTags());
-					dataFromCSV.extractAdress();
-					dataFromCSV.openExplorer();
-					break;
-
-				case 2: //Show available tags and addresses
-					dataFromCSV.printCSV();
-					break;
-
-				case 3: //Show address based on tag
-					cout << "Input tag you want to search ";
-					cin >> tagToFind;
-					dataFromCSV.tagExists(tagToFind, true);
-					break;
-
-				case 4: //Create new tag - address
-					csv.addressCreator(dataFromCSV);
-					dataFromCSV.setNewDataFromCSV("Tag-Address.csv");
-					break;
-				case 5: //Edit tag
-					csv.editTag(dataFromCSV, "Tag-Address.csv");
-					dataFromCSV.setNewDataFromCSV("Tag-Address.csv");
-					break;
-				case 6: //Edit address
-					csv.editAddress(dataFromCSV, "Tag-Address.csv");
-					dataFromCSV.setNewDataFromCSV("Tag-Address.csv");
-					break;
-
-				case 7: //Delete tag - address
-					csv.deleteAddress(dataFromCSV, "Tag-Address.csv");
-					dataFromCSV.setNewDataFromCSV("Tag-Address.csv");
-					break;
-				default:
-					cout << "Selection invalid! Please chose again!" << endl;
-					break;
+				}
+				catch (InvalidSelection e) {
+					cout << e.what();
+					exitLoop = false;
+				}
+				catch (exception e) {
+					error_message = "Error detected: \n";
+					error_message.append(e.what());
+					logger.log(ERROR, error_message);
 				}
 			}
-			catch (InvalidSelection e) {
-				cout << e.what();
-				exitLoop = false;
-			}
-			catch (exception e) {
-				error_message = "Error detected: \n";
-				error_message.append(e.what());
-				logger.log(ERROR, error_message);
-			}
 		}
-	}
-	catch (TagFileNotFound e) {
-		cout << e.what();
-	}
-	catch (exception e) {
-		error_message = "Error detected: \n";
-		error_message.append(e.what());
-		logger.log(ERROR, error_message);
+		catch (TagFileNotFound e) {
+			cout << e.what();
+		}
+		catch (exception e) {
+			error_message = "Error detected: \n";
+			error_message.append(e.what());
+			logger.log(ERROR, error_message);
+		}
+
 	}
 
-}
-
-//TODO: Implement feature to check if "Tag-Address.csv" existance, if it does -> program continues; if it doesn't -> create file
+	//TODO: Implement feature to check if "Tag-Address.csv" existance, if it does -> program continues; if it doesn't -> create file
