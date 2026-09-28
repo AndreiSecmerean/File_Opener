@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iostream>
 #include <ctime> 
+//#pragma once
 
 using namespace std;
 
