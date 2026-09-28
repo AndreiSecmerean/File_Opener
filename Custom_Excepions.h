@@ -1,5 +1,3 @@
-using namespace std;
-
 // Define a new exception class that
 // inherits from std::exception
 using namespace std;

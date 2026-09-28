@@ -8,3 +8,6 @@
 /.vs/File_Opener/v17
 /x64/Debug
 /Tag-Address.csv
+.vscode/c_cpp_properties.json
+.vscode/settings.json
+.gitignore
