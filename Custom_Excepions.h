@@ -1,5 +1,6 @@
 // Define a new exception class that
 // inherits from std::exception
+#include <string>
 using namespace std;
 class ValueAlreadyExists : public exception {
 private:

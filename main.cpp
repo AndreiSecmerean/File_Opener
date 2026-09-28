@@ -16,13 +16,12 @@
 
 using namespace std;
 
-//TODO: refactor code so that the 2 classes are in separate files, and the main function is this file
 
 
 void main()
 	{
 		string error_message;
-		Logger logger("LOG.txt", INFO, true, true); // Create a logger instance with the following options: log level, enabled, and display logs
+		Logger logger("LOG.txt", DEBUG, true, false); // Create a logger instance with the following options: log level, enabled, and display logs
 
 		logger.log(INFO, "Started folder/file opener");
 		try {
@@ -32,14 +31,24 @@ void main()
 			bool exitLoop = false;
 			bool exitMain = false;
 			CSVOperations csv;
+			logger.log(DEBUG, "Created default vars.");
 
-			if (!csv.fileExists("Tag-Address.csv")) {
-				throw TagFileNotFound("File with inital tag locations is not present, check to see if it was deleted");
+			if (csv.createCSVFile("Tag-Address.csv")){
+				logger.log(WARNING, "CSV file is missing, but was created succefully");
+
+				ifstream csvFileCheck("Tag-Address.csv");
+				if(csvFileCheck.is_open()){
+					logger.log(DEBUG, "CSV file is openable and can be read/writen");
+				}
+				else{
+					throw TagFileNotFound("File with inital tag locations is not present, check to see if it was deleted");
+				}
+				csvFileCheck.close();
 			}
 
 
 			FileOpener dataFromCSV("Tag-Address.csv");
-			logger.log(DEBUG, "created dataFromCSV");
+			logger.log(DEBUG, "Imported the data from dataFromCSV");
 			while (!exitLoop) {
 				try {
 					int menu;
@@ -141,6 +150,7 @@ void main()
 		}
 		catch (TagFileNotFound e) {
 			cout << e.what();
+			logger.log(ERROR, e.what());
 		}
 		catch (exception e) {
 			error_message = "Error detected: \n";

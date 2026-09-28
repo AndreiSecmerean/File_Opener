@@ -11,3 +11,9 @@
 .vscode/c_cpp_properties.json
 .vscode/settings.json
 .gitignore
+/.vs/File_Opener/CopilotIndices/17.14.1691.21253
+/File_Opener/x64/Release
+/x64/Release
+/LOG.txt
+/File_Opener.vcxproj.user
+/File_Opener.vcxproj

@@ -13,7 +13,7 @@ private:
 	string newAddress;
 public:
 	static bool fileExists(const string& filename);
-	void createCSVFile(const string& filename);
+	bool createCSVFile(const string& filename);
 	void addressCreator(FileOpener fileCSV);
 	void editTag(FileOpener fileCSV, const string& filename);
 	void editAddress(FileOpener fileCSV, const string& filename);

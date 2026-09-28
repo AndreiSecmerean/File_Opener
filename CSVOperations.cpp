@@ -21,15 +21,23 @@ bool CSVOperations::fileExists(const string& filename) {
 	*		true -> file exists
 	*		false -> file doesn't exist
 	*/
-	ifstream file(filename);
-	return file.good();
+	fstream file;
+	file.open(filename, fstream::in | fstream::out | fstream::app);
+	return file.is_open();
 }
 
-void CSVOperations::createCSVFile(const string& filename) {
-	static bool doesFileExist = CSVOperations::fileExists(filename);
-	if (!doesFileExist) {
+bool CSVOperations::createCSVFile(const string& filename) {
+	/*DOCU:
+	This function checks if the file with the specified filename exists, if it doesn't it creates a new csv file with the specified filename
 
+	PARAMS:
+		const string& filename -> file to be checked
+	*/
+	static bool doesFileExist = fileExists(filename);
+	if (!doesFileExist) {
+		ofstream createCSV(filename);
 	}
+	return fileExists(filename);
 }
 
 void CSVOperations::addressCreator(FileOpener fileCSV) {
